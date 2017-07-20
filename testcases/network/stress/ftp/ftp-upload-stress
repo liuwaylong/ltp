@@ -73,7 +73,7 @@ setup()
 
 	upload_opt="-owrite_enable=YES -oanon_upload_enable=YES"
 
-	vsftpd $ip_opt $upload_opt -oanonymous_enable=YES vsftpd.conf
+	vsftpd $ip_opt $upload_opt -oanonymous_enable=YES vsftpd.conf &
 }
 
 test01()
