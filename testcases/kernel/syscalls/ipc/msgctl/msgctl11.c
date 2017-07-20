@@ -45,9 +45,9 @@ int TST_TOTAL = 1;
 
 #define MAXNREPS	1000
 #ifndef CONFIG_COLDFIRE
-#define MAXNPROCS	 1000000	/* This value is set to an arbitrary high limit. */
+#define MAXNPROCS	 100000	/* This value is set to an arbitrary high limit. */
 #else
-#define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
+#define MAXNPROCS	 10000	/* Coldfire can't deal with 1000000 */
 #endif
 #define MAXNKIDS	10
 #define DEFNKIDS	2
