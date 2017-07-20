@@ -35,13 +35,13 @@ do_setup()
 	nfs_setup
 
 	tst_resm TINFO "creating test files"
-	ROD nfs_flock_dgen flock_data 63 16384 0
-	ROD nfs_flock_dgen flock_odata 63 16384 1
+	ROD nfs_flock_dgen flock_data 63 100 0
+	ROD nfs_flock_dgen flock_odata 63 100 1
 
-	[ "$(wc -c flock_data | awk '{print $1}')" -ne 1048576 ] && \
+	[ "$(wc -c flock_data | awk '{print $1}')" -ne 6400 ] && \
 		tst_brkm TBROK "could not create 'flock_data'"
 
-	[ "$(wc -c flock_odata | awk '{print $1}')" -ne 1048576 ] && \
+	[ "$(wc -c flock_odata | awk '{print $1}')" -ne 6400 ] && \
 		tst_brkm TBROK "could not create 'flock_odata'"
 }
 

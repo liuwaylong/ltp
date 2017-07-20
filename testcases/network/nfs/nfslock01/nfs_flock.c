@@ -11,7 +11,7 @@
 #include <unistd.h>
 
 #define BYTES 64
-#define LINES 16384
+#define LINES 100
 
 int main(argc, argv)
 int argc;
