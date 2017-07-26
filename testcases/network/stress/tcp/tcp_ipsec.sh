@@ -20,7 +20,7 @@ TCID=tcp_ipsec
 TST_TOTAL=3
 TST_CLEANUP="tst_ipsec_cleanup"
 
-client_requests=10000
+client_requests=100
 max_requests=10
 
 . ipsec_lib.sh
