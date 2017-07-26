@@ -87,7 +87,7 @@ nfs_setup()
 				*:$remote_dir"
 		fi
 
-		opts="-o proto=$type,vers=$i"
+		opts="-o intr,rsize=1024,wsize=1024,proto=$type,vers=$i"
 
 		if [ $TST_IPV6 ]; then
 			mount_dir="[$(tst_ipaddr rhost)]:$remote_dir"
