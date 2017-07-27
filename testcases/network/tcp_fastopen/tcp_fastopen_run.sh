@@ -22,7 +22,7 @@
 user_name="root"
 use_ssh=0
 clients_num=2
-client_requests=2000000
+client_requests=50000
 max_requests=3
 
 TST_TOTAL=1
