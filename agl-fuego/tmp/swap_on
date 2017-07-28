@@ -1,0 +1,4 @@
+mount /dev/mmcblk0 /nfs
+sleep 5
+swapon /nfs/swapfile
+sleep 3

@@ -1,0 +1,40 @@
+export RHOST=192.168.10.50
+export RUSER=root
+export PASSWD=root
+export LHOST_HWADDRS="00:05:1b:a4:5b:7c 00:0e:c6:c5:b2:fe" 
+export RHOST_HWADDRS="00:4c:00:00:27:88 00:0e:c6:c5:c0:b4"
+export LHOST_IFACES="eth1 eth2"
+export RHOST_IFACES="enx004c00002788 enx000ec6c5c0b4"
+
+export NS_DURATION=30
+export NS_TIMES=30
+export CONNECTION_TOTAL=30
+export IP_TOTAL=1000
+export IP_TOTAL_FOR_TCPIP=2000
+export ROUTE_TOTAL=1000
+export MTU_CHANGE_TIMES=100
+export IF_UPDOWN_TIMES=1000
+export MCASTNUM_HEAVY=4000
+
+export HTTP_DOWNLOAD_DIR=/downloads
+export FTP_DOWNLOAD_DIR=/downloads
+export FTP_UPLOAD_DIR=/downloads
+export FTP_UPLOAD_URLDIR=/downloads
+
+export DOWNLOAD_BIGFILESIZE=2097152
+export DOWNLOAD_REGFILESIZE=1048576
+export UPLOAD_BIGFILESIZE=2097152
+export UPLOAD_REGFILESIZE=1024
+export MCASTNUM_NORMAL=20
+export MCASTNUM_HEAVY=400
+
+export LTP_TIMEOUT_MUL=100
+
+export HTTP_DOWNLOAD_DIR=/www/pages/
+export FTP_DOWNLOAD_DIR=/var/ftp
+export FTP_UPLOAD_DIR=/var/ftp/pub
+export FTP_UPLOAD_URLDIR=/pub
+
+export ITERATIONS=500
+
+echo 21299200 > /proc/sys/net/core/wmem_default

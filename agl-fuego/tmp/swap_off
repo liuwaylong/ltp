@@ -1,0 +1,4 @@
+swapoff /nfs/swapfile
+sleep 5
+umount /nfs
+sleep 3
