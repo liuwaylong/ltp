@@ -1,0 +1,13 @@
+diff --git a/testcases/kernel/device-drivers/locking/lock_torture.sh b/testcases/kernel/device-drivers/locking/lock_torture.sh
+index 55a23f9..1ed2a19 100755
+--- a/testcases/kernel/device-drivers/locking/lock_torture.sh
++++ b/testcases/kernel/device-drivers/locking/lock_torture.sh
+@@ -83,7 +83,7 @@ for type in $lock_type; do
+ 		tst_brkm TBROK "failed to unload module"
+ 
+ 	# check module status in dmesg
+-	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
++	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+)( \[debug\]){0,1}:.*/\1/p'`
+ 	if [ "$result_str" = "SUCCESS" ]; then
+ 		tst_resm TPASS "$type: completed"
+ 	else
