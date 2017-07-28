@@ -1,0 +1,13 @@
+diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+index 0abf39d..9ff62dd 100644
+--- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
++++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
+@@ -90,7 +90,7 @@ nfs_setup()
+ 		opts="-o proto=$type,vers=$i"
+ 
+ 		if [ $TST_IPV6 ]; then
+-			mount_dir="[$(tst_ipaddr rhost)]:$remote_dir"
++			mount_dir="[$(tst_ipaddr rhost)%$LHOST_IFACES]:$remote_dir"
+ 		else
+ 			mount_dir="$(tst_ipaddr rhost):$remote_dir"
+ 		fi

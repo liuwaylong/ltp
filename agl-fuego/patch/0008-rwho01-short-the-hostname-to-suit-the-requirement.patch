@@ -1,0 +1,16 @@
+diff --git a/testcases/network/tcp_cmds/rwho/rwho01 b/testcases/network/tcp_cmds/rwho/rwho01
+index 9842aba..a2f676f 100755
+--- a/testcases/network/tcp_cmds/rwho/rwho01
++++ b/testcases/network/tcp_cmds/rwho/rwho01
+@@ -62,9 +62,9 @@ do_test()
+ 		tst_brkm TFAIL "$LHOST isn't in rwho output"
+ 	rwho -a | grep -q $RHOSTNAME || \
+ 		tst_brkm TFAIL "$RHOSTNAME isn't in rwho output"
+-	ruptime -a | grep -q $LHOST || \
++	ruptime -a | grep -q ${LHOST:0:12} || \
+ 		tst_brkm TFAIL "$LHOST is not in ruptime outfile"
+-	ruptime -a | grep -q $RHOSTNAME || \
++	ruptime -a | grep -q ${RHOSTNAME:0:12} || \
+ 		tst_brkm TFAIL "$RHOSTNAME is not in ruptime outfile"
+ }
+ 

@@ -1,0 +1,34 @@
+diff --git a/testcases/network/tcp_cmds/sendfile/sendfile01 b/testcases/network/tcp_cmds/sendfile/sendfile01
+index 98e4f44..c891baa 100755
+--- a/testcases/network/tcp_cmds/sendfile/sendfile01
++++ b/testcases/network/tcp_cmds/sendfile/sendfile01
+@@ -61,7 +61,11 @@ do_test()
+ 	local port=$(tst_rhost_run -s -c "tst_get_unused_port $ipv stream")
+ 	[ -z "$port" ] && tst_brkm TBROK "failed to get unused port"
+ 
+-	tst_rhost_run -s -b -c "$SERVER $ipaddr $port"
++	if [ -z $TST_IPV6 ]; then
++		tst_rhost_run -s -b -c "$SERVER $ipaddr $port"
++	else
++		tst_rhost_run -s -b -c "$SERVER $ipaddr%$RHOST_IFACES $port"
++	fi
+ 	server_started=1
+ 	sleep 10
+ 
+@@ -71,9 +75,14 @@ do_test()
+ 
+ 		tst_resm TINFO \
+ 			"$CLIENT ip '$ipaddr' port '$port' file '$clnt_fname'"
++		if [ -z $TST_IPV6 ]; then 
++			$CLIENT $ipaddr $port $clnt_fname $serv_fname $size >\
++				/dev/null 2>&1
++		else
++			$CLIENT $ipaddr%$LHOST_IFACES $port $clnt_fname $serv_fname $size >\
++				/dev/null 2>&1
++		fi
+ 
+-		$CLIENT $ipaddr $port $clnt_fname $serv_fname $size >\
+-			/dev/null 2>&1
+ 
+ 		local ret=$?
+ 		if [ $ret -ne 0 ]; then

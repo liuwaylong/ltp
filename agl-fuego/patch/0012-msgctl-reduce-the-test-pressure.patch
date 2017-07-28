@@ -1,0 +1,31 @@
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+index f0f873f..37abdc7 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
++++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl10.c
+@@ -45,8 +45,8 @@
+ char *TCID = "msgctl10";
+ int TST_TOTAL = 1;
+ 
+-#define MAXNPROCS	10000	/*These should be sufficient */
+-#define MAXNREPS	10000	/*Else they srewup the system un-necessarily */
++#define MAXNPROCS	5000	/*These should be sufficient */
++#define MAXNREPS	5000	/*Else they srewup the system un-necessarily */
+ 
+ static key_t keyarray[MAXNPROCS];
+ static int pidarray[MAXNPROCS];
+diff --git a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+index 89099a7..d1d6583 100644
+--- a/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
++++ b/testcases/kernel/syscalls/ipc/msgctl/msgctl11.c
+@@ -45,9 +45,9 @@ int TST_TOTAL = 1;
+ 
+ #define MAXNREPS	1000
+ #ifndef CONFIG_COLDFIRE
+-#define MAXNPROCS	 1000000	/* This value is set to an arbitrary high limit. */
++#define MAXNPROCS	 100000	/* This value is set to an arbitrary high limit. */
+ #else
+-#define MAXNPROCS	 100000	/* Coldfire can't deal with 1000000 */
++#define MAXNPROCS	 10000	/* Coldfire can't deal with 1000000 */
+ #endif
+ #define MAXNKIDS	10
+ #define DEFNKIDS	2

@@ -1,0 +1,14 @@
+diff --git a/testcases/network/rpc/basic_tests/rup/rup01 b/testcases/network/rpc/basic_tests/rup/rup01
+index 99916d4..16fec1d 100755
+--- a/testcases/network/rpc/basic_tests/rup/rup01
++++ b/testcases/network/rpc/basic_tests/rup/rup01
+@@ -73,7 +73,8 @@ $trace_logic
+ 
+ echo "Checking for rstatd on $RHOST"
+ 
+-rpcinfo -u $RHOST rstatd 3 > /dev/null 2>&1
++#rpcinfo -u $RHOST rstatd 3 > /dev/null 2>&1
++rpcinfo -p $RHOST | grep rstatd | grep 3 > /dev/null 2>&1
+ if [ $? -ne 0 ]; then
+   echo "Attempting to start rstatd on $RHOST"
+   rsh -n -l root $RHOST "/usr/sbin/rpc.rstatd &"

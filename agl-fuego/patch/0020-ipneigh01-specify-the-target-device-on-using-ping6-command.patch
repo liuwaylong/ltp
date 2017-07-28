@@ -1,0 +1,28 @@
+diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+index 99bab16..b268942 100755
+--- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
++++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+@@ -17,7 +17,7 @@
+ # Test basic functionality of 'arp' and 'ip neigh'.
+ 
+ TCID=ipneigh01
+-NUMLOOPS=${NUMLOOPS:-50}
++NUMLOOPS=${NUMLOOPS:-10}
+ TST_TOTAL=2
+ . test_net.sh
+ 
+@@ -41,12 +41,12 @@ do_test()
+ 
+ 	for i in $(seq 1 $NUMLOOPS); do
+ 
+-		ping$TST_IPV6 -q -c1 $rhost > /dev/null
++		ping$TST_IPV6 -q -c1 -I${LHOST_IFACES} $rhost > /dev/null
+ 
+ 		local k
+ 		local ret=1
+ 		# wait for arp entry at least 3 seconds
+-		for k in $(seq 1 30); do
++		for k in $(seq 1 5); do
+ 			$arp_show_cmd | grep -q $rhost
+ 			if [ $? -eq 0 ]; then
+ 				ret=0

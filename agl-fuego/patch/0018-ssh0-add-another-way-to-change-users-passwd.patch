@@ -1,0 +1,23 @@
+diff --git a/testcases/network/tcp_cmds/ssh/ssh_setup b/testcases/network/tcp_cmds/ssh/ssh_setup
+index ad6cb99..33e7b35 100755
+--- a/testcases/network/tcp_cmds/ssh/ssh_setup
++++ b/testcases/network/tcp_cmds/ssh/ssh_setup
+@@ -35,6 +35,18 @@ do_setup()
+ 	fi
+ 
+ 	echo "$TEST_USER:$TEST_USER_PASSWD" | chpasswd
++	if [ $? -ne 0 ]; then
++		/usr/bin/expect<<-EOF
++		spawn passwd $TEST_USER
++		sleep 1
++		expect "password:"
++		send "$TEST_USER_PASSWD\n"
++		sleep 1
++		expect "password:"
++		send "$TEST_USER_PASSWD\n"
++		expect eof
++		EOF
++	fi
+ 
+ 	# create users home diretory (SLES 8 does not do this, even when
+ 	# specified in adduser)

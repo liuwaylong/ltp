@@ -1,0 +1,12 @@
+diff --git a/testcases/network/tcp_cmds/ping/ping01.sh b/testcases/network/tcp_cmds/ping/ping01.sh
+index 73f1180..f6782d1 100755
+--- a/testcases/network/tcp_cmds/ping/ping01.sh
++++ b/testcases/network/tcp_cmds/ping/ping01.sh
+@@ -45,7 +45,7 @@ do_test()
+ 	tst_resm TINFO "$PING_CMD with $PACKETSIZES ICMP packets"
+ 	local ipaddr=$(tst_ipaddr rhost)
+ 	for packetsize in $PACKETSIZES; do
+-		EXPECT_PASS $PING_CMD -c $COUNT -s $packetsize $ipaddr \>/dev/null
++		EXPECT_PASS $PING_CMD -I$LHOST_IFACES -c $COUNT -s $packetsize $ipaddr \>/dev/null
+ 	done
+ }

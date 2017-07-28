@@ -1,0 +1,26 @@
+diff --git a/testcases/network/traceroute/traceroute01.sh b/testcases/network/traceroute/traceroute01.sh
+index 1e01a1c..3137d63 100755
+--- a/testcases/network/traceroute/traceroute01.sh
++++ b/testcases/network/traceroute/traceroute01.sh
+@@ -41,7 +41,7 @@ run_trace()
+ 	local bytes=60
+ 	[ "$TST_IPV6" ] && bytes=80
+ 
+-	EXPECT_PASS traceroute $ip $bytes -n -m 2 $opts \>out.log 2>&1
++	EXPECT_PASS traceroute -i $LHOST_IFACES $ip $bytes -n -m 2 $opts \>out.log 2>&1
+ 
+ 	grep -q "$bytes byte" out.log
+ 	if [ $? -ne 0 ]; then
+@@ -51,10 +51,10 @@ run_trace()
+ 		tst_resm TPASS "traceroute use $bytes bytes"
+ 	fi
+ 
+-	tail -1 out.log | grep -qE "^[ ]+1[ ]+$ip([ ]+[0-9]+[.][0-9]+ ms){3}"
++	tail -1 out.log | grep -qE "^[ ]+1[ ]+$ip%$LHOST_IFACES([ ]+[0-9]+[.][0-9]+ ms){3}"
+ 	if [ $? -ne 0 ]; then
+ 		cat out.log
+-		tst_resm TFAIL "^[ ]+1[ ]+$ip([ ]+[0-9]+[.][0-9]+ ms){3}' "
++		tst_resm TFAIL "^\s+1\s+$ip%$LHOST_IFACES([ ]+[0-9]+[.][0-9]+ ms){3}' "
+ 			"pattern not found in log"
+ 	else
+ 		tst_resm TPASS "traceroute test completed with 1 hop"

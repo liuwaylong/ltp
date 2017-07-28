@@ -1,0 +1,43 @@
+diff --git a/testcases/commands/unzip/unzip01.sh b/testcases/commands/unzip/unzip01.sh
+index 532afc0..d0e8f31 100755
+--- a/testcases/commands/unzip/unzip01.sh
++++ b/testcases/commands/unzip/unzip01.sh
+@@ -52,6 +52,28 @@ Archive:  $TST_DATAROOT/test.zip
+    creating: dir/d3/d2/
+    creating: dir/d3/d3/
+ EOF
++
++        cat > unzip_exp02.out <<EOF                                               
++Archive:  $TST_DATAROOT/test.zip                                                
++   creating: dir/                                                               
++   creating: dir/d1/                                                            
++   creating: dir/d2/                                                            
++   creating: dir/d3/                                                            
++   creating: dir/d4/                                                            
++  inflating: dir/d1/f1                                                          
++  inflating: dir/d1/f2                                                          
++  inflating: dir/d1/f3                                                          
++   creating: dir/d2/d1/                                                         
++   creating: dir/d2/d2/                                                         
++   creating: dir/d2/d3/                                                         
++  inflating: dir/d2/f1                                                          
++  inflating: dir/d2/f2                                                          
++  inflating: dir/d2/f3                                                          
++   creating: dir/d3/d1/                                                         
++   creating: dir/d3/d2/
++   creating: dir/d3/d3/                      
++EOF
++
+ }
+ 
+ stable_ls()
+@@ -76,7 +98,8 @@ do_test()
+ {
+ 	EXPECT_PASS unzip "$TST_DATAROOT/test.zip" \> unzip.out
+ 
+-	if diff -w unzip_exp.out unzip.out; then
++	if diff -w unzip_exp.out unzip.out \
++		|| diff -w unzip_exp02.out unzip.out; then
+ 		tst_res TPASS "Unzip output is correct"
+ 	else
+ 		tst_res TFAIL "Unzip output is incorrect"

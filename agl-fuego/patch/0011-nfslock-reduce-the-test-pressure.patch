@@ -1,0 +1,35 @@
+diff --git a/testcases/network/nfs/nfslock01/nfs_flock.c b/testcases/network/nfs/nfslock01/nfs_flock.c
+index 39f6125..b6b98bc 100644
+--- a/testcases/network/nfs/nfslock01/nfs_flock.c
++++ b/testcases/network/nfs/nfslock01/nfs_flock.c
+@@ -11,7 +11,7 @@
+ #include <unistd.h>
+ 
+ #define BYTES 64
+-#define LINES 16384
++#define LINES 100
+ 
+ int main(argc, argv)
+ int argc;
+diff --git a/testcases/network/nfs/nfslock01/nfslock01 b/testcases/network/nfs/nfslock01/nfslock01
+index ab04246..24286c8 100755
+--- a/testcases/network/nfs/nfslock01/nfslock01
++++ b/testcases/network/nfs/nfslock01/nfslock01
+@@ -35,13 +35,13 @@ do_setup()
+ 	nfs_setup
+ 
+ 	tst_resm TINFO "creating test files"
+-	ROD nfs_flock_dgen flock_data 63 16384 0
+-	ROD nfs_flock_dgen flock_odata 63 16384 1
++	ROD nfs_flock_dgen flock_data 63 100 0
++	ROD nfs_flock_dgen flock_odata 63 100 1
+ 
+-	[ "$(wc -c flock_data | awk '{print $1}')" -ne 1048576 ] && \
++	[ "$(wc -c flock_data | awk '{print $1}')" -ne 6400 ] && \
+ 		tst_brkm TBROK "could not create 'flock_data'"
+ 
+-	[ "$(wc -c flock_odata | awk '{print $1}')" -ne 1048576 ] && \
++	[ "$(wc -c flock_odata | awk '{print $1}')" -ne 6400 ] && \
+ 		tst_brkm TBROK "could not create 'flock_odata'"
+ }
+ 

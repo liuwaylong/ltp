@@ -1,0 +1,38 @@
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 0849355..67adbc0 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -80,10 +80,13 @@ tst_rhost_run()
+ 		tst_resm TWARN "tst_rhost_run: command not defined"
+ 		return 1
+ 	fi
++	pre_cmd=' export PATH=$PATH:/mnt/tmp3/ltp_bin/testcases/bin/ && '$pre_cmd
+ 
+ 	local output=
+ 	local ret=0
+ 	if [ -n "$TST_USE_SSH" ]; then
++	#echo "ssh -n -q $user@$RHOST sh -c $pre_cmd $cmd $post_cmd"
++	#echo ""
+ 		output=`ssh -n -q $user@$RHOST "sh -c \
+ 			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+ 	elif [ -n "$TST_USE_NETNS" ]; then
+@@ -249,7 +252,7 @@ tst_add_ipaddr()
+ 
+ 	if [ $type = "lhost" ]; then
+ 		tst_resm TINFO "set local addr $(tst_ipaddr)/$mask"
+-		ip addr add $(tst_ipaddr)/$mask dev $iface
++		ip addr show $iface | grep -nqE $(tst_ipaddr) || ip addr add $(tst_ipaddr)/$mask dev $iface
+ 		return $?
+ 	fi
+ 
+@@ -266,9 +269,9 @@ tst_restore_ipaddr()
+ 	local type="${1:-lhost}"
+ 	local link_num="${2:-0}"
+ 
++	local ret=0
+ 	tst_init_iface $type $link_num || return $?
+ 
+-	local ret=0
+ 	local backup_tst_ipv6=$TST_IPV6
+ 	TST_IPV6= tst_add_ipaddr $type $link_num || ret=$?
+ 	TST_IPV6=6 tst_add_ipaddr $type $link_num || ret=$?

@@ -1,0 +1,12 @@
+diff --git a/testcases/network/tcp_cmds/ping/ping02.sh b/testcases/network/tcp_cmds/ping/ping02.sh
+index 6a9878e..5113653 100755
+--- a/testcases/network/tcp_cmds/ping/ping02.sh
++++ b/testcases/network/tcp_cmds/ping/ping02.sh
+@@ -37,7 +37,7 @@ do_test()
+ 
+ 	local ipaddr=$(tst_ipaddr rhost)
+ 	for psize in $PACKETSIZES; do
+-		EXPECT_PASS $PING -c $COUNT -f -s $psize $ipaddr -p "$pat" \>/dev/null
++		EXPECT_PASS $PING -I$LHOST_IFACES -c $COUNT -f -s $psize $ipaddr -p "$pat" \>/dev/null
+ 	done
+ }

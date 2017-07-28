@@ -1,0 +1,47 @@
+diff --git a/meta-networking/recipes-netkit/netkit-rusers/netkit-rusers/rpc.rusersd-rup-fix-clntcall-timeout-issue.patch b/meta-networking/recipes-netkit/netkit-rusers/netkit-rusers/rpc.rusersd-rup-fix-clntcall-timeout-issue.patch
+new file mode 100644
+index 0000000..22d128d
+--- /dev/null
++++ b/meta-networking/recipes-netkit/netkit-rusers/netkit-rusers/rpc.rusersd-rup-fix-clntcall-timeout-issue.patch
+@@ -0,0 +1,29 @@
++diff -uprN netkit-rusers-0.17.orig/rup/rup.c netkit-rusers-0.17/rup/rup.c
++--- netkit-rusers-0.17.orig/rup/rup.c	2017-07-14 13:46:21.030808408 -0400
+++++ netkit-rusers-0.17/rup/rup.c	2017-07-14 13:49:01.306808408 -0400
++@@ -58,6 +58,8 @@ static int print_rup_data(const char *ho
++ 
++ static int printtime;			/* print the remote host(s)'s time */
++ static int printseconds;                /* print in seconds, not formatted */
+++static struct timeval timeout = { 25, 0 };
+++					/* timeout for function "clnt_call"*/
++ 
++ struct host_list {
++ 	struct host_list *next;
++@@ -245,7 +247,6 @@ onehost(const char *host)
++ {
++ 	CLIENT *rstat_clnt;
++ 	statstime host_stat;
++-	struct timeval foo;
++ 	
++ 	rstat_clnt = clnt_create(host, RSTATPROG, RSTATVERS_TIME, "udp");
++ 	if (rstat_clnt == NULL) {
++@@ -257,7 +258,7 @@ onehost(const char *host)
++ 	if (clnt_call(rstat_clnt, RSTATPROC_STATS, 
++ 		      (xdrproc_t) xdr_void, NULL, 
++ 		      (xdrproc_t) xdr_statstime, (char *)&host_stat, 
++-		      foo) != RPC_SUCCESS) 
+++		      timeout) != RPC_SUCCESS) 
++ 	{
++ 		warnx("%s",  clnt_sperror(rstat_clnt, host));
++ 		return;
+diff --git a/meta-networking/recipes-netkit/netkit-rusers/netkit-rusers_0.17.bb b/meta-networking/recipes-netkit/netkit-rusers/netkit-rusers_0.17.bb
+index 459e39e..36175cb 100644
+--- a/meta-networking/recipes-netkit/netkit-rusers/netkit-rusers_0.17.bb
++++ b/meta-networking/recipes-netkit/netkit-rusers/netkit-rusers_0.17.bb
+@@ -9,6 +9,7 @@ DEPENDS = " tcp-wrappers libtirpc rpcbind"
+ SRC_URI = "http://http.debian.net/debian/pool/main/n/${BPN}/${BPN}_${PV}.orig.tar.gz;name=archive \
+            http://http.debian.net/debian/pool/main/n/${BPN}/${BPN}_${PV}-8.diff.gz;name=patch8 \
+            file://rpc.rusersd-Makefile-fix-parallel-build-issue.patch \
++           file://rpc.rusersd-rup-fix-clntcall-timeout-issue.patch \
+ "
+ 
+ SRC_URI[archive.md5sum] = "dc99a80b9fde2ab427c874f88f1c1602"

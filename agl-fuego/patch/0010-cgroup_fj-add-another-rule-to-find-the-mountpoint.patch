@@ -1,0 +1,13 @@
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+index 2c8dfd3..2050328 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+@@ -93,7 +93,7 @@ setup()
+     tst_tmpdir
+     TST_CLEANUP=cleanup
+ 
+-    mount_point=`grep -w $subsystem /proc/mounts | cut -f 2 | cut -d " " -f2`
++    mount_point=`grep -w $subsystem /proc/mounts | grep -w "cgroup" | cut -f 2 | cut -d " " -f2`
+ 
+     if [ -z "$mount_point" ]; then
+         try_umount=1

@@ -1,0 +1,64 @@
+diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+index 8184716..76b3bca 100644
+--- a/testcases/network/netstress/netstress.c
++++ b/testcases/network/netstress/netstress.c
+@@ -31,6 +31,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <errno.h>
++#include <net/if.h>
+ 
+ #include "lapi/posix_clocks.h"
+ #include "tst_safe_pthread.h"
+@@ -226,9 +227,41 @@ static int client_recv(int *fd, char *buf)
+ 
+ static int client_connect_send(const char *msg, int size)
+ {
++        unsigned int ifindex = 0;
++	char *iface = NULL;
++
+ 	int cfd = SAFE_SOCKET(remote_addrinfo->ai_family,
+ 			 remote_addrinfo->ai_socktype, 0);
+ 
++	iface = strchr(server_addr, '%');
++
++	if(iface) 
++    	{
++		iface++;
++	}
++	else
++	{
++		iface = getenv("LHOST_IFACES");
++		// set multi ifaces
++		// TODO	
++	}
++
++	tst_res(TINFO, "server_addr:%s %s", server_addr, iface);
++
++	if(iface)
++	{
++		if(AF_INET6 == remote_addrinfo->ai_family)
++		{
++			ifindex = if_nametoindex(iface);
++			((struct sockaddr_in6 *)remote_addrinfo->ai_addr)->sin6_scope_id = ifindex;
++			tst_res(TINFO, "LHOST_IFACES index :%d", ifindex);
++		}
++	}
++	else
++	{
++		tst_res(TINFO, "LHOST_IFACES is not set");
++	}
++
+ 	init_socket_opts(cfd);
+ 
+ 	if (fastopen_api) {
+@@ -253,6 +286,9 @@ void *client_fn(LTP_ATTRIBUTE_UNUSED void *arg)
+ 
+ 	/* connect & send requests */
+ 	cfd = client_connect_send(client_msg, client_msg_size);
++	
++	tst_res(TINFO, "CLIENT connect send");
++
+ 	if (cfd == -1) {
+ 		err = errno;
+ 		goto out;

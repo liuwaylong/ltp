@@ -1,0 +1,22 @@
+diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+index fb43448..46480e0 100755
+--- a/testcases/network/xinetd/xinetd_tests.sh
++++ b/testcases/network/xinetd/xinetd_tests.sh
+@@ -116,7 +116,7 @@ test01()
+ 
+ 	for a in $check_addr; do
+ 		echo '' | telnet $a 2>&1 | grep -qi \
+-			"telnet: connect to address $a: Connection refused"
++			"telnet:.*: Connection refused"
+ 		[ $? -ne 0 ] && \
+ 			tst_brkm TFAIL "not expected output for 'telnet $a'"
+ 	done
+@@ -128,7 +128,7 @@ test01()
+ 	restart_xinetd
+ 
+ 	for a in $check_addr; do
+-		echo '' | telnet $a 2>&1 | grep -qi \
++		sleep 2 | telnet $a 2>&1 | grep -qi \
+ 			"Connection closed by foreign host"
+ 		[ $? -ne 0 ] && \
+ 			tst_brkm TFAIL "not expected output for 'telnet $a'"

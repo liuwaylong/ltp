@@ -1,0 +1,26 @@
+diff --git a/testcases/network/stress/tcp/tcp_ipsec.sh b/testcases/network/stress/tcp/tcp_ipsec.sh
+index ebcd1d5..28baea8 100755
+--- a/testcases/network/stress/tcp/tcp_ipsec.sh
++++ b/testcases/network/stress/tcp/tcp_ipsec.sh
+@@ -20,7 +20,7 @@ TCID=tcp_ipsec
+ TST_TOTAL=3
+ TST_CLEANUP="tst_ipsec_cleanup"
+ 
+-client_requests=10000
++client_requests=100
+ max_requests=10
+ 
+ . ipsec_lib.sh
+diff --git a/testcases/network/stress/udp/udp_ipsec.sh b/testcases/network/stress/udp/udp_ipsec.sh
+index 8e047a4..ea5a328 100755
+--- a/testcases/network/stress/udp/udp_ipsec.sh
++++ b/testcases/network/stress/udp/udp_ipsec.sh
+@@ -20,7 +20,7 @@ TCID=udp_ipsec
+ TST_TOTAL=3
+ TST_CLEANUP="tst_ipsec_cleanup"
+ 
+-client_requests=10000
++client_requests=100
+ 
+ . ipsec_lib.sh
+ 
