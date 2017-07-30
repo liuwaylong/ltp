@@ -1,42 +1,51 @@
-diff --git a/agl-fuego/cgroup_umount.sh b/agl-fuego/cgroup_umount.sh
+From e8716495aaab905b1bd8f32a1bcdcd74c8026b97 Mon Sep 17 00:00:00 2001
+From: Liu Wenlong <liuwl.fnst@cn.fujitsu.com>
+Date: Sun, 30 Jul 2017 06:40:29 -0700
+Subject: [PATCH 2/2] controllers: add a script to umount CGROUPs
+
+The controllers related cases need to clean the CGROUPs first
+before testing.
+For most distri, CGROUPs were mounted automatically which need to
+be unmounted first before test start.
+
+Signed-off-by: Liu Wenlong <liuwl.fnst@cn.fujitsu.com>
+---
+ testscripts/cgroup_umount.sh | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+ create mode 100755 testscripts/cgroup_umount.sh
+
+diff --git a/testscripts/cgroup_umount.sh b/testscripts/cgroup_umount.sh
 new file mode 100755
-index 0000000..9d839fc
+index 0000000..1f3ed1f
 --- /dev/null
-+++ b/agl-fuego/cgroup_umount.sh
-@@ -0,0 +1,36 @@
++++ b/testscripts/cgroup_umount.sh
+@@ -0,0 +1,26 @@
 +#!/bin/sh
 +
 +echo "start umount check ..."
-+#uname -r | grep -e "3\.1.\.0"
-+if [ $? -eq 0 ]; then
-+	echo "start umount ..."
-+        # cgroup directory umount
-+        grep "/sys/fs/cgroup/" /proc/mounts | grep -v systemd | \
++echo "start umount ..."
++# cgroup directory umount
++grep "/sys/fs/cgroup/" /proc/mounts | grep -v systemd | \
 +                                              awk '{print $2}' > all_cgroup
-+	pwd
-+	ls -l
-+	cat all_cgroup
-+        while read dir; do
-+                cd $dir
-+		echo "cd $dir"
-+		ls -l
-+                for line in `find -type d | grep -v '^.$' | sort -r`; do
-+                        cd $line
-+			echo "cd $line"
-+                        while read pid; do
-+                                echo $pid > $dir/tasks
-+                        done < tasks
-+                        cd - > /dev/null
-+                        rmdir $line
-+			echo "rmdir $line..."
-+                        if [ $? -ne 0 ]; then
-+				cat $line/tasks
-+                                rm -f $line/tasks
-+                                rmdir $line
-+                        fi
-+                done
-+                cd $ltp_dir
-+                umount $dir
-+        done < all_cgroup
-+        service NetworkManager stop 2> /dev/null
-+fi
++while read dir; do
++	cd $dir
++	for line in `find -type d | grep -v '^.$' | sort -r`; do
++		cd $line
++		echo "cd $line"
++		while read pid; do
++			echo $pid > $dir/tasks
++		done < tasks
++		cd - > /dev/null
++		rmdir $line
++		if [ $? -ne 0 ]; then
++			cat $line/tasks
++			rm -f $line/tasks
++			rmdir $line
++		fi
++	done
++	cd $ltp_dir
++	umount $dir
++done < all_cgroup
+-- 
+2.7.4
+
