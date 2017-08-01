@@ -1,17 +1,22 @@
+From 68c485cf985098a879894e0c10539f5982aabc9e Mon Sep 17 00:00:00 2001
+From: Cai Song <cais.fnst@cn.fujitsu.com>
+Date: Tue, 1 Aug 2017 05:28:37 -0400
+Subject: [PATCH] net.tcp_cmds/ipneigh01: specify the specific network device
+
+The target machine(dragonboard-410c) cannot connect to the test server
+with command "ping6".
+Now, specify the specific network device when using "ping6Y"
+
+Signed-off-by: Cai Song <cais.fnst@cn.fujitsu.com>
+---
+ testcases/network/tcp_cmds/ipneigh/ipneigh01.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-index 99bab16..b268942 100755
+index 99bab16..8af81f5 100755
 --- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
 +++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
-@@ -17,7 +17,7 @@
- # Test basic functionality of 'arp' and 'ip neigh'.
- 
- TCID=ipneigh01
--NUMLOOPS=${NUMLOOPS:-50}
-+NUMLOOPS=${NUMLOOPS:-10}
- TST_TOTAL=2
- . test_net.sh
- 
-@@ -41,12 +41,12 @@ do_test()
+@@ -41,7 +41,7 @@ do_test()
  
  	for i in $(seq 1 $NUMLOOPS); do
  
@@ -20,9 +25,6 @@ index 99bab16..b268942 100755
  
  		local k
  		local ret=1
- 		# wait for arp entry at least 3 seconds
--		for k in $(seq 1 30); do
-+		for k in $(seq 1 5); do
- 			$arp_show_cmd | grep -q $rhost
- 			if [ $? -eq 0 ]; then
- 				ret=0
+-- 
+2.7.4
+
