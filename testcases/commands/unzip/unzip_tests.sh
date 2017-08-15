@@ -53,6 +53,27 @@ Archive:  $TST_DATAROOT/test.zip
    creating: dir/d3/d2/
    creating: dir/d3/d3/
 EOF
+
+        cat > unzip_exp02.out <<EOF                                               
+Archive:  $TST_DATAROOT/test.zip 
+   creating: dir/
+   creating: dir/d1/
+   creating: dir/d2/
+   creating: dir/d3/
+   creating: dir/d4/
+  inflating: dir/d1/f1
+  inflating: dir/d1/f2
+  inflating: dir/d1/f3
+   creating: dir/d2/d1/
+   creating: dir/d2/d2/
+   creating: dir/d2/d3/
+  inflating: dir/d2/f1
+  inflating: dir/d2/f2
+  inflating: dir/d2/f3
+   creating: dir/d3/d1/
+   creating: dir/d3/d2/
+   creating: dir/d3/d3/
+EOF
 }
 
 stable_ls()
@@ -86,7 +107,8 @@ do_test()
 
 	stable_ls "dir" > dir.out
 
-	if diff "$TST_DATAROOT/dir.out" dir.out; then
+	if diff "$TST_DATAROOT/dir.out" dir.out \
+		|| diff -w unzip_exp02.out unzip.out; then
 		tst_res TPASS "Files unzipped correctly"
 	else
 		tst_res TFAIL "Files unzipped incorrectly"
