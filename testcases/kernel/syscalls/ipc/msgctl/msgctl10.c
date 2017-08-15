@@ -45,8 +45,8 @@
 char *TCID = "msgctl10";
 int TST_TOTAL = 1;
 
-#define MAXNPROCS	10000	/*These should be sufficient */
-#define MAXNREPS	10000	/*Else they srewup the system un-necessarily */
+#define MAXNPROCS	5000	/*These should be sufficient */
+#define MAXNREPS	5000	/*Else they srewup the system un-necessarily */
 
 static key_t keyarray[MAXNPROCS];
 static int pidarray[MAXNPROCS];
