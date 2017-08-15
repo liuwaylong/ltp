@@ -31,6 +31,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
+#include <net/if.h>
 
 #include "lapi/posix_clocks.h"
 #include "tst_safe_pthread.h"
@@ -226,8 +227,33 @@ static int client_recv(int *fd, char *buf)
 
 static int client_connect_send(const char *msg, int size)
 {
+	unsigned int ifindex = 0;
+	char *iface = NULL;
+	struct sockaddr_in6 *paddr = NULL;
+
 	int cfd = SAFE_SOCKET(remote_addrinfo->ai_family,
 			 remote_addrinfo->ai_socktype, 0);
+
+	iface = strchr(server_addr, '%');
+	if (iface) {
+		iface++;
+	} else {
+		iface = getenv("LHOST_IFACES");
+		/* TODO: set multi ifaces */
+	}
+
+	tst_res(TINFO, "server_addr:%s %s", server_addr, iface);
+
+	if (iface) {
+		if (remote_addrinfo->ai_family == AF_INET6) {
+			ifindex = if_nametoindex(iface);
+			paddr = (struct sockaddr_in6 *)remote_addrinfo->ai_addr;
+			paddr->sin6_scope_id = ifindex;
+			tst_res(TINFO, "LHOST_IFACES index :%d", ifindex);
+		}
+	} else {
+		tst_res(TINFO, "LHOST_IFACES is not set");
+	}
 
 	init_socket_opts(cfd);
 
