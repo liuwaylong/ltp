@@ -42,6 +42,7 @@ fi
 
 setfattr --name=security.SMACK64 --value=TheOther "$testfile"
 setto=$(getfattr --only-values -n security.SMACK64 -e text $testfile)
+echo "TheOne                  System                  rwx-"> /smack/load
 
 if [ "TheOther" != "$setto" ]; then
 	tst_brkm TFAIL "Test file \"$testfile\" labeled \"$setto\" incorrectly."
