@@ -23,7 +23,7 @@ start_label=$(cat "$smackfsdir/onlycap" 2>/dev/null)
 echo "$my_label" 2>/dev/null > "$smackfsdir/onlycap"
 
 label=$(cat "$smackfsdir/onlycap" 2>/dev/null)
-if [ "$label" != "$my_label" ]; then
+if [ "$label" != "$my_label " ]; then
 	tst_brkm TFAIL "The smack label reported for \"$smackfsdir/onlycap\" "
 		       "is \"$label\", not the expected \"$my_label\"."
 fi
