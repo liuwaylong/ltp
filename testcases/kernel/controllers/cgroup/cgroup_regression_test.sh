@@ -182,7 +182,7 @@ test_3()
 	fi
 
 	# Run the test for 30 secs
-	mount -t cgroup -o cpu xxx cgroup/
+	mount -t cgroup -o cpu,cpuacct xxx cgroup/
 	if [ $? -ne 0 ]; then
 		tst_resm TFAIL "Failed to mount cpu subsys"
 		failed=1
