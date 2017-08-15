@@ -41,7 +41,7 @@ do_test()
 
 	for i in $(seq 1 $NUMLOOPS); do
 
-		ping$TST_IPV6 -q -c1 $rhost > /dev/null
+		ping$TST_IPV6 -q -c1 -I${LHOST_IFACES} $rhost > /dev/null
 
 		local k
 		local ret=1
