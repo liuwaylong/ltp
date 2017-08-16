@@ -294,6 +294,31 @@ static void usage(void)
 }
 
 /*
+ * Create file for test
+ */
+int create_test_file(const char *filename)
+{
+	char tmp_str[100] = { 0 };
+
+	if (filename == NULL)
+		return 1;
+
+	/* create file for test */
+	sprintf(&tmp_str[0], "mkdir -p %s", filename);
+	system(&tmp_str[0]);
+	usleep(10*1000);
+	memset(&tmp_str[0], 0, 100);
+	sprintf(&tmp_str[0], "rm -rf %s", filename);
+	system(&tmp_str[0]);
+	usleep(10*1000);
+	sprintf(&tmp_str[0], "dd if=/dev/zero of=%s bs=1M count=2", filename);
+	system(&tmp_str[0]);
+	usleep(10*1000);
+
+	return 0;
+}
+
+/*
  * Scale value by kilo, mega, or giga.
  */
 long long scale_by_kmg(long long value, char scale)
@@ -395,6 +420,9 @@ int main(int argc, char *const *argv)
 		usage();
 	}
 	if (!zero) {
+		/* create file for test */
+		create_test_file(*argv);
+
 		if ((srcfd = open(srcname = *argv, source_open_flag)) < 0) {
 			perror(srcname);
 			exit(1);
@@ -416,6 +444,9 @@ int main(int argc, char *const *argv)
 		if (argc < 1) {
 			usage();
 		}
+		/* create file for test */
+		create_test_file(*argv);
+
 		if ((dstfd = open(dstname = *argv, dest_open_flag, 0666)) < 0) {
 			perror(dstname);
 			exit(1);
