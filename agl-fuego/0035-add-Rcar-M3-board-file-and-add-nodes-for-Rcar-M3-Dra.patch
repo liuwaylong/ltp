@@ -1,0 +1,267 @@
+From c850d2b2e694c6b1f829eaefc5f650c374c556a4 Mon Sep 17 00:00:00 2001
+From: Liu Wenlong <liuwl.fnst@cn.fujitsu.com>
+Date: Wed, 6 Sep 2017 02:28:14 -0400
+Subject: [PATCH 2/3] add Rcar-M3 board file and add nodes for
+ Rcar-M3/Dragonboard410c
+
+Signed-off-by: Liu Wenlong <liuwl.fnst@cn.fujitsu.com>
+---
+ userdata/conf/boards/Rcar-M3.board         | 87 ++++++++++++++++++++++++++++++
+ userdata/conf/boards/dragonboard.board     | 30 ++++++++---
+ userdata/conf/nodes/Rcar-M3/config.xml     | 31 +++++++++++
+ userdata/conf/nodes/dragonboard/config.xml | 31 +++++++++++
+ userdata/conf/tools.sh                     | 12 +++++
+ 5 files changed, 184 insertions(+), 7 deletions(-)
+ create mode 100644 userdata/conf/boards/Rcar-M3.board
+ create mode 100644 userdata/conf/nodes/Rcar-M3/config.xml
+ create mode 100644 userdata/conf/nodes/dragonboard/config.xml
+
+diff --git a/userdata/conf/boards/Rcar-M3.board b/userdata/conf/boards/Rcar-M3.board
+new file mode 100644
+index 0000000..93c00c0
+--- /dev/null
++++ b/userdata/conf/boards/Rcar-M3.board
+@@ -0,0 +1,87 @@
++inherit "base-board"
++include "base-params"
++
++IPV4_NET="192.168.10"
++
++IPADDR="192.168.10.6"
++L_IPV4_HOST="6"
++L_HOST_IF="eth0"
++SSH_PORT="22"
++LOGIN="root"
++JTA_HOME="/tmp"
++#PASSWORD="root"
++PLATFORM="arm64"
++TRANSPORT="ssh"
++ARCHITECTURE="arm"
++
++BLOCK_DEV_500M="/dev/sda2"
++BLOCK_DEV_5GB="/dev/sda2"
++
++L_IPV4_HOST="192.168.10.6"
++R_IPV4_HOST="192.168.10.50"
++L_HOST_IF="eth0"
++R_HOST_IF="enx00051ba43a76"
++
++#LTP related
++RHOST="192.168.10.50"
++RUSER="root"
++PASSWD="root"
++LHOST_HWADDRS="00:0e:c6:c5:b2:fe"
++RHOST_HWADDRS="b0:c7:45:5f:6f:57"
++LHOST_IFACES="eth1"
++RHOST_IFACES="enxb0c7455f6f57"
++
++# configuration used to show the test info to CIAT.list_result
++BOARD_VER="Renesas-M3 Rev 1.0"
++DEVICE_TEST="/dev/sda1"
++DEVICE_FS="ext4"
++
++SATA_DEV="/dev/sda1"
++SATA_MP="/mnt/sata"
++
++USB_DEV="/dev/sdb1"
++USB_MP="/mnt/usb"
++
++MMC_DEV="/dev/mmcblk0p2"
++MMC_MP="/mnt/mmc"
++
++BOARD.CAP_LIST="RENESAS"
++
++LTP_OPEN_POSIX_SUBTEST_COUNT_POS="1319"
++LTP_OPEN_POSIX_SUBTEST_COUNT_NEG="169"
++
++EXPAT_SUBTEST_COUNT_POS="1769"
++EXPAT_SUBTEST_COUNT_NEG="41"
++
++LTP_EXPECT_FAIL_CASES="isofs mmapstress08 ksm02 ksm02_1 ksm04 ksm04_1 ksm06 ksm06_1 ksm06_2 oom02 oom03 oom04 oom05 vma02 vma03 vma04 overcommit_memory02 overcommit_memory03 cgroup memcg_stat memcg_use_hierarchy cpuset_base_ops cpuset_inherit cpuset_exclusive cpuset_hierarchy cpuset_syscall cpuset_sched_domains cpuset_load_balance cpuset_hotplug cpuset_memory cpuset_memory_pressure cpuset_memory_spread cpuset_regression_test su01 runpwtests01 runpwtests02 runpwtests03 runpwtests04 runpwtests06 runpwtests_exclusive01 runpwtests_exclusive02 runpwtests_exclusive03 runpwtests_exclusive04 runpwtests_exclusive05 Numa-testcases move_pages01 move_pages02 move_pages03 move_pages04 move_pages05 move_pages06 move_pages07 move_pages08 move_pages09 move_pages10 move_pages11 hugeshmat04 ht_interrupt rtc01 dma_thread_diotest1 dma_thread_diotest2 dma_thread_diotest3 dma_thread_diotest4 dma_thread_diotest5 dma_thread_diotest6 dma_thread_diotest7 f00f rmdir05 ima03 memcg_stat memcg_use_hierarchy ipneigh601 tirpc_authdes_create tirpc_authdes_seccreate route4-change-if route6-change-if route4-rmmod route6-rmmod busy_poll01 busy_poll01_ipv6 busy_poll02 busy_poll02_ipv6 busy_poll03 busy_poll03_ipv6 adjtimex02 fcntl06 getdents01 getdents02 munlockall02 ptrace03 readdir21 rename11 rmdir05 shmctl02 signal06 socketcall01 sysctl01 sysctl03 sysctl04 sysctl05 sysfs01 sysfs02 sysfs03 sysfs04 sysfs05 sysfs06 hugemmap01 hugemmap05 hugemmap06 hugemmap05_1 hugemmap05_2 hugemmap05_3 dnsmasq6 ipneigh601 finger rdist dnsmasq xinetd cron df01_xfs df01_exfat df01_ntfs mkfs01_xfs mkfs01_btrfs mkfs01_minix mkfs01_ntfs insmod01 keyctl01 cpuhotplug03 cpuhotplug04 cpuhotplug05 cpuhotplug07 hugemmap01 hugemmap02 hugemmap04 hugemmap05 hugemmap06 hugemmap05_1 hugemmap05_2 hugemmap05_3 zram01 zram02 zram03 rtc01 tpci tbio ltp_acpi fcntl06 getdents01 getdents02 msgrcv08 munlockall02 madvise01 madvise02 ptrace03 readdir21 rename11 request_key01 request_key02 rmdir05 sbrk03 shmctl02 signal06 socketcall01 sysconf01 sysctl01 sysctl02 sysctl03 sysctl04 sysctl05 sysfs01 sysfs02 sysfs03 sysfs04 sysfs05 sysfs06 ustat01 ustat02 ipneigh601 dnsmasq6 rup cpuset01 dio04 dio10 adjtimex02 fcntl06 getdents01 getdents02 munlockall02 ptrace03 readdir21 rename11 rmdir05 shmctl02 signal06 socketcall01 su01 cron_deny01 cron_allow01 cron_dirs_checks01 thp01 overcommit_memory02 overcommit_memory03 swapping01 rup tcp_fastopen tcp_fastopen6 vxlan_multi_03 vxlan_uni_03 vxlan_ipv6_multi_03 vxlan_ipv6_uni_03 vlan03 ipvlan01 gre_ipv4_01 gre_ipv6_01 dctcp_ipv4_01 dctcp_ipv6_01 geneve01 geneve01_ipv6 finger rdist rwho sendfile dnsmasq traceroute01 xinetd add_key02 bdflush01 cacheflush01 chown01_16 chown02_16 chown03_16 chown04_16 chown05_16 clock_getres01 eventfd01 fchown01_16 fchown02_16 fchown03_16 fchown04_16 fchown05_16 fcntl06 fcntl06_64 futimesat01 getdents01 getdents02 getegid01_16 getegid02_16 geteuid01_16 geteuid02_16 getgid01_16 getgid03_16 getgroups01_16 getgroups03_16 get_mempolicy01 getuid01_16 getuid03_16 getxattr04 keyctl02 keyctl03 kcmp01 kcmp02 kcmp03 lchown01_16 lchown02_16 lchown03_16 mbind01 migrate_pages01 migrate_pages02 move_pages12 mq_open01 msgrcv08 munlockall02 openat02 madvise01 madvise02 madvise06 madvise07 madvise09 ptrace03 ptrace04 quotactl02 quotactl03 readahead02 readdir21 request_key01 request_key02 mdir05 sbrk03 sendfile09 sendfile09_64 setfsgid01_16 setfsgid02_16 setfsgid03_16 setfsuid01_16 setfsuid02_16 setfsuid03_16 setfsuid04_16 setgid01_16 setgid02_16 setgid03_16 sgetmask01 setgroups01_16 setgroups02_16 setgroups03_16 setgroups04_16 setregid01_16 setregid02_16 setregid03_16 setregid04_16 setresgid01_16 setresgid02_16 setresgid03_16 setresgid04_16 setresuid01_16 setresuid02_16 setreuid03_16 setreuid04_16 setreuid05_16 setreuid06_16 setreuid07_16 set_thread_area01 setuid01_16 setuid02_16 setuid03_16 setuid04_16 shmctl02 signal06 socketcall01 ssetmask01 switch01 perf_event_open01 su01 cron_allow01 cron_dirs_checks01 acl_test01 rup setresuid03_16 setresuid04_16 setresuid05_16 setreuid01_16 setreuid02_16 sendfile601 "
++
++# for network test of ltp
++# name of the remote host machine
++REMOTE_HOST="192.168.111.1"
++R_IPV4_HOST="1"
++R_HOST_IF="eth0"
++# root passwd of the remote host machine
++REMOTE_PASSWD="root"
++
++# configuration for CIAT
++# configuration for building images
++#BUILD_SERVERIP="192.168.30.70"
++#BUILD_USER="vince"
++#BUILD_PASSWORD="root"
++#BUILD_PATH="/compile/agl-demo/CIAT"
++# the directory for image will be $BUILD_PATH/repoclone/$IMAGE_PATH/
++IMAGE_PATH="build/tmp/deploy/images"
++UIMAGE="uImage"
++DTB="uImage-r8a7791-porter.dtb"
++ROOTFS="agl-demo-platform-porter.tar.bz2"
++
++# configuration for tftp/nfs server
++BOOT_SERVERIP="192.168.30.70"
++BOOT_PASSWORD="root"
++BOOT_TFTP_PATH="/srv/tftp/"
++BOOT_NFS_PATH="/nfs/"
++BOOT_NUM_FILE="boot_num"
++
++# wait seconds during reboot
++REBOOT_WAIT="60"
++
+diff --git a/userdata/conf/boards/dragonboard.board b/userdata/conf/boards/dragonboard.board
+index 5c7f22f..1403ca6 100644
+--- a/userdata/conf/boards/dragonboard.board
++++ b/userdata/conf/boards/dragonboard.board
+@@ -1,20 +1,36 @@
+ inherit "base-board"
+ include "base-params"
+ 
+-IPV4_NET="192.168.30"
++IPV4_NET="192.168.10"
+ 
+-IPADDR="192.168.30.234"
+-L_IPV4_HOST="64"
++IPADDR="192.168.10.30"
++L_IPV4_HOST="30"
+ L_HOST_IF="eth0"
+ SSH_PORT="22"
+ LOGIN="root"
+-#JTA_HOME="/home/"
+-JTA_HOME="/tmp/"
++JTA_HOME="/home/ltp"
+ #PASSWORD="root"
+-PLATFORM="dragonboard"
++PLATFORM="arm64"
+ TRANSPORT="ssh"
+ ARCHITECTURE="arm64"
+ 
++BLOCK_DEV_500M="/dev/sda1"
++BLOCK_DEV_5GB="/dev/sda1"
++
++L_IPV4_HOST="192.168.10.30"
++R_IPV4_HOST="192.168.10.50"
++L_HOST_IF="eth0"
++R_HOST_IF="enx004c00002787"
++
++#LTP related
++RHOST="192.168.10.50"
++RUSER="root"
++PASSWD="root"
++LHOST_HWADDRS="00:0e:c6:c5:b2:fe"
++RHOST_HWADDRS="b0:c7:45:5f:6f:57"
++LHOST_IFACES="eth1"
++RHOST_IFACES="enxb0c7455f6f57"
++
+ # configuration used to show the test info to CIAT.list_result
+ BOARD_VER="Dragonboard Rev 1.0"
+ DEVICE_TEST="/dev/sda1"
+@@ -37,7 +53,7 @@ LTP_OPEN_POSIX_SUBTEST_COUNT_NEG="40"
+ EXPAT_SUBTEST_COUNT_POS="1769"
+ EXPAT_SUBTEST_COUNT_NEG="41"
+ 
+-LTP_EXPECT_FAIL_CASES="abort01 access06 acct01 adjtimex02 cacheflush01 chmod06 chown04 chown04_16 clock_getres01 creat06 eventfd01 fallocate04 fchmod06 fchown04 fchown04_16 fcntl06 fcntl06_64 fcntl24 fcntl24_64 fcntl25 fcntl25_64 fcntl26 fcntl26_64 fork14 ftruncate04 ftruncate04_64 gethostid01 getrandom01 getrandom02 getrandom03 getrandom04 get_mempolicy01 getxattr01 getxattr02 getxattr03 ioctl03 inotify03 fanotify01 fanotify02 fanotify03 fanotify04 fanotify05 fanotify06 io_cancel01 io_destroy01 io_getevents01 io_setup01 io_submit01 kill11 lchown03 lchown03_16 link08 linkat02 mbind01 migrate_pages01 migrate_pages02 mkdir03 mkdirat02 mknod07 mknodat02 mmap15 mmap16 mount01 mount02 mount03 mount04 mount06 move_pages01 move_pages02 move_pages03 move_pages04 move_pages05 move_pages06 move_pages07 move_pages08 move_pages09 move_pages10 move_pages11 mq_notify01 mq_notify02 mq_open01 mq_timedreceive01 mq_timedsend01 mq_unlink01 munlockall02 prot_hsymlinks ptrace03 ptrace04 quotactl01 quotactl02 read02 readahead02 readdir21 recv01 recvfrom01 recvmsg01 rename11 renameat01 rmdir02 rmdir05 sendfile09 sendfile09_64 sendmsg01 sgetmask01 setns02 setregid02 setregid02_16 set_thread_area01 setxattr01 setxattr02 setxattr03 shmctl02 ssetmask01 swapoff01 swapoff02 swapon01 swapon02 swapon03 switch01 sysconf01 sysctl01 sysctl03 sysctl04 sysctl05 syslog01 syslog02 syslog03 syslog04 syslog05 syslog06 syslog07 syslog08 syslog09 syslog10 umount01 umount02 umount03 umount2_01 umount2_02 umount2_03 utime06 utimes01 utimensat01 perf_event_open01 perf_event_open02 futex_wake04 gf01 gf14 gf18 quota_remount_test01 isofs dio01 dio02 dio03 dio04 dio05 dio06 dio07 dio08 dio09 dio10 dio11 dio12 dio13 dio14 dio15 dio16 dio17 dio18 dio19 dio20 dio21 dio22 dio23 dio24 dio25 dio26 dio27 dio28 aio01 aio02 mmapstress08 mmap10_2 mmap10_3 mmap10_4 ksm01 ksm01_1 ksm02 ksm02_1 ksm03 ksm03_1 ksm04 ksm04_1 ksm05 ksm06 ksm06_1 ksm06_2 oom01 oom02 oom03 oom04 oom05 swapping01 thp02 thp03 thp04_1 thp04_2 thp04_3 thp05_1 thp05_2 thp05_3 vma02 vma04 overcommit_memory01 overcommit_memory02 overcommit_memory03 overcommit_memory04 overcommit_memory05 overcommit_memory06 pidns01 pidns02 pidns03 pidns04 pidns05 pidns06 pidns10 pidns12 pidns13 pidns16 pidns17 pidns20 pidns30 pidns31 pidns32 mqns_01 mqns_01_clone mqns_02 mqns_02_clone mqns_03 mqns_03_clone mqns_04 mqns_04_clone netns_netlink netns_breakns_ns_exec_ipv4_net netns_breakns_ns_exec_ipv6_net netns_breakns_ns_exec_ipv4_ioc netns_breakns_ns_exec_ipv6_ioc netns_breakns_ip_ipv4_netlink netns_breakns_ip_ipv6_netlink netns_breakns_ip_ipv4_ioctl netns_breakns_ip_ipv6_ioctl netns_comm_ns_exec_ipv4_netlin netns_comm_ns_exec_ipv6_netlin netns_comm_ns_exec_ipv4_ioctl netns_comm_ns_exec_ipv6_ioctl netns_comm_ip_ipv4_netlink netns_comm_ip_ipv6_netlink netns_comm_ip_ipv4_ioctl netns_comm_ip_ipv6_ioctl netns_sysfs shmnstest_none shmnstest_clone shmnstest_unshare shmem_2nstest_none shmem_2nstest_clone shmem_2nstest_unshare shm_comm mesgq_nstest_none mesgq_nstest_clone mesgq_nstest_unshare msg_comm sem_nstest_none sem_nstest_clone sem_nstest_unshare semtest_2ns_none semtest_2ns_clone semtest_2ns_unshare sem_comm utstest_unshare_1 utstest_unshare_2 utstest_unshare_3 utstest_unshare_4 utstest_unshare_5 utstest_clone_1 utstest_clone_2 utstest_clone_3 utstest_clone_4 utstest_clone_5 userns01 userns02 userns03 userns04 userns05 userns06 cgroup cgroup_fj cpuset_base_ops cpuset_inherit cpuset_exclusive cpuset_hierarchy cpuset_syscall cpuset_sched_domains cpuset_load_balance cpuset_hotplug cpuset_memory cpuset_memory_pressure cpuset_memory_spread cpuset_regression_test su01 cron02 cron_deny01 cron_allow01 cron_dirs_checks01 acl_test01 runpwtests01 runpwtests02 runpwtests03 runpwtests04 runpwtests06 Numa-testcases move_pages01 move_pages02 move_pages03 move_pages04 move_pages05 move_pages06 move_pages07 move_pages08 move_pages09 move_pages10 move_pages11 hugemmap01 hugemmap04 hugemmap05 hugemmap05_1 hugemmap05_2 hugemmap05_3 hugeshmat01 hugeshmat02 hugeshmat03 hugeshmat04 hugeshmctl01 hugeshmctl02 hugeshmctl03 hugeshmdt01 hugeshmget01 hugeshmget02 hugeshmget03 hugeshmget05 ar ld ldd nm objdump file cron logrotate cpio unzip01 gzip01 df01_ext2 df01_ext3 df01_ext4 df01_xfs df01_vfat df01_exfat df01_ntfs ht_interrupt fw_load rtc01 block_dev tpci tbio ltp_acpi cpufreq_boost uaccess rcu_torture lock_torture zram01 zram02 zram03 delete_module01 delete_module03 ext4-nsec-timestamps ext4-uninit-groups ext4-persist-prealloc ext4-subdir-limit dma_thread_diotest1 dma_thread_diotest2 dma_thread_diotest3 dma_thread_diotest4 dma_thread_diotest5 dma_thread_diotest6 dma_thread_diotest7 can_filter can_rcv_own_msgs cpuhotplug02 cpuhotplug03 cpuhotplug05 cpuhotplug06 cpuhotplug07 arp finger ftp host netstat ping rcp rdist rlogin rsh rwho sendfile tcpdump telnet iptables dhcpd dnsmasq mc_cmds mc_commo mc_member mc_opts rpc01 rpcinfo rup rusers nfs01 nfs02 nfs03 nfs04 nfsstress nfsstat01 nfsx-linux"
++LTP_EXPECT_FAIL_CASES="isofs mmapstress08 ksm02 ksm02_1 ksm04 ksm04_1 ksm06 ksm06_1 ksm06_2 oom02 oom03 oom04 oom05 vma02 vma03 vma04 overcommit_memory02 overcommit_memory03 cgroup memcg_stat memcg_use_hierarchy cpuset_base_ops cpuset_inherit cpuset_exclusive cpuset_hierarchy cpuset_syscall cpuset_sched_domains cpuset_load_balance cpuset_hotplug cpuset_memory cpuset_memory_pressure cpuset_memory_spread cpuset_regression_test su01 runpwtests01 runpwtests02 runpwtests03 runpwtests04 runpwtests06 runpwtests_exclusive01 runpwtests_exclusive02 runpwtests_exclusive03 runpwtests_exclusive04 runpwtests_exclusive05 Numa-testcases move_pages01 move_pages02 move_pages03 move_pages04 move_pages05 move_pages06 move_pages07 move_pages08 move_pages09 move_pages10 move_pages11 hugeshmat04 ht_interrupt dma_thread_diotest1 dma_thread_diotest2 dma_thread_diotest3 dma_thread_diotest4 dma_thread_diotest5 dma_thread_diotest6 dma_thread_diotest7 f00f rmdir05 ima02 ima03 memcg_stat memcg_use_hierarchy ipneigh601 tirpc_authdes_create tirpc_authdes_seccreate route4-change-if route6-change-if route4-rmmod route6-rmmod busy_poll01 busy_poll01_ipv6 busy_poll02 busy_poll02_ipv6 busy_poll03 busy_poll03_ipv6 adjtimex02 fcntl06 getdents01 getdents02 munlockall02 ptrace03 readdir21 rename11 rmdir05 shmctl02 signal06 socketcall01 sysctl01 sysctl03 sysctl04 sysctl05 sysfs01 sysfs02 sysfs03 sysfs04 sysfs05 sysfs06 hugemmap01 hugemmap05 hugemmap06 hugemmap05_1 hugemmap05_2 hugemmap05_3 dnsmasq6 ipneigh601 finger rdist dnsmasq xinetd cron df01_xfs df01_exfat df01_ntfs mkfs01_xfs mkfs01_btrfs mkfs01_minix mkfs01_ntfs insmod01 keyctl01 cpuhotplug03 cpuhotplug04 cpuhotplug05 cpuhotplug07 hugemmap01 hugemmap02 hugemmap04 hugemmap05 hugemmap06 hugemmap05_1 hugemmap05_2 hugemmap05_3 zram01 zram02 zram03 tpci tbio ltp_acpi lock_torture fw_load rtc01 block_dev cpufreq_boost uaccess delete_module01 delete_module02 delete_module03 adjtimex02 fcntl06 getdents01 getdents02 msgrcv08 munlockall02 madvise01 madvise02 ptrace03 readdir21 rename11 request_key01 request_key02 rmdir05 sbrk03 shmctl02 signal06 socketcall01 sysconf01 sysctl01 sysctl02 sysctl03 sysctl04 sysctl05 sysfs01 sysfs02 sysfs03 sysfs04 sysfs05 sysfs06 ustat01 ustat02 ipneigh601 dnsmasq6 rup cpuset01 dio04 dio10 adjtimex02 fcntl06 getdents01 getdents02 munlockall02 ptrace03 readdir21 rename11 rmdir05 shmctl02 signal06 socketcall01 su01 cron_deny01 cron_allow01 cron_dirs_checks01 thp01 overcommit_memory02 overcommit_memory03 swapping01 rup tcp_fastopen tcp_fastopen6 vxlan_multi_03 vxlan_uni_03 vxlan_ipv6_multi_03 vxlan_ipv6_uni_03 vlan03 ipvlan01 gre_ipv4_01 gre_ipv6_01 dctcp_ipv4_01 dctcp_ipv6_01 geneve01 geneve01_ipv6 traceroute01 xinetd sendfile rwho dist finger sched_rr_get_interval01 sched_rr_get_interval02 sched_rr_get_interval03 sched_setparam02 sched_setparam03 sched_getscheduler01 add_key02 bdflush01 cacheflush01 chown01_16 chown02_16 chown03_16 chown04_16 chown05_16 clock_getres01 eventfd01 fchown01_16 fchown02_16 fchown03_16 fchown04_16 fchown05_16 fcntl06 fcntl06_64 futimesat01 getdents01 getdents02 getegid01_16 getegid02_16 geteuid01_16 geteuid02_16 getgid01_16 getgid03_16 getgroups01_16 getgroups03_16 get_mempolicy01 getuid01_16 getuid03_16 getxattr04 keyctl02 keyctl03 kcmp01 kcmp02 kcmp03 lchown01_16 lchown02_16 lchown03_16 mbind01 migrate_pages01 migrate_pages02 move_pages12 mq_open01 msgrcv08 munlockall02 openat02 madvise01 madvise02 madvise06 madvise07 madvise09 ptrace03 ptrace04 quotactl02 quotactl03 readahead02 readdir21 request_key01 request_key02 mdir05 sbrk03 sendfile09 sendfile09_64 setfsgid01_16 setfsgid02_16 setfsgid03_16 setfsuid01_16 setfsuid02_16 setfsuid03_16 setfsuid04_16 setgid01_16 setgid02_16 setgid03_16 sgetmask01 setgroups01_16 setgroups02_16 setgroups03_16 setgroups04_16 setregid01_16 setregid02_16 setregid03_16 setregid04_16 setresgid01_16 setresgid02_16 setresgid03_16 setresgid04_16 setresuid01_16 setresuid02_16 setreuid03_16 setreuid04_16 setreuid05_16 setreuid06_16 setreuid07_16 set_thread_area01 setuid01_16 setuid02_16 setuid03_16 setuid04_16 shmctl02 signal06 socketcall01 ssetmask01 switch01 perf_event_open01 su01 cron_allow01 cron_dirs_checks01 acl_test01 rup setresuid03_16 setresuid04_16 setresuid05_16 setreuid01_16 setreuid02_16 sendfile601 "
+ 
+ # for network test of ltp
+ # name of the remote host machine
+diff --git a/userdata/conf/nodes/Rcar-M3/config.xml b/userdata/conf/nodes/Rcar-M3/config.xml
+new file mode 100644
+index 0000000..ec3d636
+--- /dev/null
++++ b/userdata/conf/nodes/Rcar-M3/config.xml
+@@ -0,0 +1,31 @@
++<?xml version='1.0' encoding='UTF-8'?>
++<slave>
++  <name>Rcar-M3</name>
++  <description></description>
++  <remoteFS>/tmp/dev-slave1</remoteFS>
++  <numExecutors>1</numExecutors>
++  <mode>NORMAL</mode>
++  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
++  <launcher class="hudson.slaves.CommandLauncher">
++    <agentCommand>java -jar /home/jenkins/slave.jar</agentCommand>
++  </launcher>
++  <label></label>
++  <nodeProperties>
++    <hudson.slaves.EnvironmentVariablesNodeProperty>
++      <envVars serialization="custom">
++        <unserializable-parents/>
++        <tree-map>
++          <default>
++            <comparator class="hudson.util.CaseInsensitiveComparator"/>
++          </default>
++          <int>2</int>
++          <string>BOARD_OVERLAY</string>
++          <string>boards/Rcar-M3.board</string>
++          <string>DISTRIB</string>
++          <string>distribs/nologger.dist</string>
++        </tree-map>
++      </envVars>
++    </hudson.slaves.EnvironmentVariablesNodeProperty>
++  </nodeProperties>
++  <userId>anonymous</userId>
++</slave>
+\ No newline at end of file
+diff --git a/userdata/conf/nodes/dragonboard/config.xml b/userdata/conf/nodes/dragonboard/config.xml
+new file mode 100644
+index 0000000..242e777
+--- /dev/null
++++ b/userdata/conf/nodes/dragonboard/config.xml
+@@ -0,0 +1,31 @@
++<?xml version='1.0' encoding='UTF-8'?>
++<slave>
++  <name>dragonboard</name>
++  <description></description>
++  <remoteFS>/tmp/dev-slave1</remoteFS>
++  <numExecutors>1</numExecutors>
++  <mode>NORMAL</mode>
++  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
++  <launcher class="hudson.slaves.CommandLauncher">
++    <agentCommand>java -jar /home/jenkins/slave.jar</agentCommand>
++  </launcher>
++  <label></label>
++  <nodeProperties>
++    <hudson.slaves.EnvironmentVariablesNodeProperty>
++      <envVars serialization="custom">
++        <unserializable-parents/>
++        <tree-map>
++          <default>
++            <comparator class="hudson.util.CaseInsensitiveComparator"/>
++          </default>
++          <int>2</int>
++          <string>BOARD_OVERLAY</string>
++          <string>boards/dragonboard.board</string>
++          <string>DISTRIB</string>
++          <string>distribs/nologger.dist</string>
++        </tree-map>
++      </envVars>
++    </hudson.slaves.EnvironmentVariablesNodeProperty>
++  </nodeProperties>
++  <userId>anonymous</userId>
++</slave>
+\ No newline at end of file
+diff --git a/userdata/conf/tools.sh b/userdata/conf/tools.sh
+index b38eb54..5848e7c 100755
+--- a/userdata/conf/tools.sh
++++ b/userdata/conf/tools.sh
+@@ -101,4 +101,16 @@ then
+ 
+     unset PYTHONHOME
+     env -u PYTHONHOME
++elif [ "${PLATFORM}" = "arm64" ];
++then
++    SDKROOT=/userdata/toolchains/arm64/aarch64-agl-linux
++
++    ORIG_PATH=$PATH
++
++    PREFIX=aarch64-agl-linux
++    source /userdata/toolchains/arm64/environment-setup-aarch64-agl-linux 
++    HOST=aarch64-agl-linux
++
++    unset PYTHONHOME
++    env -u PYTHONHOME
+ fi
+-- 
+2.7.4
+

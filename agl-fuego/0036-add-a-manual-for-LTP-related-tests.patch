@@ -1,0 +1,383 @@
+From e249d1a51d51eba0d0bab07f6572b5994c4d80ae Mon Sep 17 00:00:00 2001
+From: Liu Wenlong <liuwl.fnst@cn.fujitsu.com>
+Date: Wed, 6 Sep 2017 02:31:02 -0400
+Subject: [PATCH 3/3] add a manual for LTP related tests
+
+The details about this manual,
+1. tell users how to build images with those packages/configs which
+   LTP depends with yocto.
+2. tell users how to establish a test server for LTP network related
+   tests.
+
+Signed-off-by: Liu Wenlong <liuwl.fnst@cn.fujitsu.com>
+---
+ docs/How-to-do-LTP-on-AGL-JTA.md | 357 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 357 insertions(+)
+ create mode 100644 docs/How-to-do-LTP-on-AGL-JTA.md
+
+diff --git a/docs/How-to-do-LTP-on-AGL-JTA.md b/docs/How-to-do-LTP-on-AGL-JTA.md
+new file mode 100644
+index 0000000..e7315a1
+--- /dev/null
++++ b/docs/How-to-do-LTP-on-AGL-JTA.md
+@@ -0,0 +1,357 @@
++Do LTP in CIAT.
++
++1. How to build Images used for LTP test by yocto
++ 1.1 Download the AGL-repo (follow the AGL official manual[1])
++     Note: master branch should be downloaded.
++
++ 1.2 Build rootfs/image for LTP test
++     Change the variable named AGL_IMAGE_LTP = "yes" in 
++     file "/meta-agl/templates/base/local.conf.sample".
++     Before:
++	 AGL_IMAGE_LTP = "no"
++     After: 
++	 AGL_IMAGE_LTP = "yes"
++
++ 1.3 Build modules within LTP during image building
++     Add "inherit module" to line68 in file "ltp_20160126.bb"
++     (Path: /poky/meta/recipes-extended/ltp/ltp_20160126.bb)
++     For example, 
++     Before, 
++        ... ...
++        S = "${WORKDIR}/git" 
++        inherit autotools-brokensep 
++        TARGET_CC_ARCH += "${LDFLAGS}" 
++        ... ...
++     After,
++        ... ...
++        S = "${WORKDIR}/git"
++        inherit module
++        inherit autotools-brokensep
++        TARGET_CC_ARCH += "${LDFLAGS}"
++        ... ...
++
++ 1.4 Setting up the build environment
++     Following the AGL official documentation[2].
++
++ 1.5 Build Images used for LTP test
++     $ bitbake agl-demo-platform-qa
++     # Note, it's agl-demo-platform-qa(not agl-demo-platform or others)
++
++ 1.6 Deploy Images to your target
++     Following the AGL official documentation.
++     If you are using "Renesas-M3", 
++	please follow[3].
++     else if you are using "dragonboard-410c"
++	please follow[4].
++
++2. How to install AGL-JTA and run tests
++ 2.1 Download the source code of AGL-JTA&AGL-JTA-core
++   $ git clone https://git.automotivelinux.org/AGL-JTA-core
++   $ git clone https://git.automotivelinux.org/AGL-JTA
++
++ 2.2 Install the AGL-JTA(also named AGL-Fuego)
++   $ ./AGL-JTA/install.sh
++
++ 2.3 Create docker container
++   $ ./AGL-JTA/jta-host-scripts/docker-create-containter.sh
++
++ 2.4 Run docker container
++   $ ./AGL-JTA/jta-host-scripts/docker-start-container.sh
++
++ 2.5 Setup the test environment of your target
++   # There is an example below. 
++   # Pay attention on the comments below, please.
++   # The variables which has comments inline should be changed to meet your need.
++   $ cat /userdata/conf/boards/dragonboard.board
++   inherit "base-board"
++   include "base-params"
++
++   IPV4_NET="192.168.10"
++   IPADDR="192.168.10.30"	# change to the real ip of your target
++   L_IPV4_HOST="30"		# change to the real ip of your target
++   L_HOST_IF="eth0"		# change to the real IF of your target
++   SSH_PORT="22"
++   LOGIN="root"
++   JTA_HOME="/home/ltp"
++   #PASSWORD="root"
++   PLATFORM="arm64"		# it'll be used for setting up SDK env in tools.sh
++   TRANSPORT="ssh"
++   ARCHITECTURE="arm64"
++
++   BLOCK_DEV_500M="/dev/sda1"	# change to the real block device which > 500M
++   BLOCK_DEV_5GB="/dev/sda1"	# change to the real block device which > 5GB
++   ... ...
++
++ 2.6 Install the SDK for your target
++   $ bitbake meta-toolchain
++   # install your target toolchain.
++   # modify file "tool.sh" to meet your need.
++
++ 2.7 Run the tests you want with the web user interface
++   # type "yourip:8080" in your browser
++   # then, just run the tests you want
++
++3. How to setup test server
++ The detail about how to set LTP network test environment was introduced in this part.
++
++ 3.1 How to login and set IP automatically on M3
++ Background:
++ It'll be convenient if users can login and set the IP automatically.
++
++ 3.1.1 Set auto-login on M3
++   1) Go to the folder named "/etc/systemd/system/getty.target.wants/".
++       root@m3ulcb:/# cd /etc/systemd/system/getty.target.wants/
++       root@m3ulcb:/etc/systemd/system/getty.target.wants/# ls
++       getty@tty1.service  serial-getty@ttySC0.service"
++
++   2) Modify the file "serial-getty@ttySC0.service".
++       root@m3ulcb:/etc/systemd/system/getty.target.wants/# vi ./serial-getty@ttySC0.service
++       # Add "-a root" in line24, as follows,
++       Before:
++         Environment="TERM=xterm"
++         ExecStart=-/sbin/agetty -8 -L %I 115200 $TERM
++         Type=idle
++       After:
++ 	 Environment="TERM=xterm"
++	 ExecStart=-/sbin/agetty -8 -L -a root %I 115200 $TERM
++	 Type=idle
++
++   3) Now, you can restart your M3.
++      You'll find the M3 can login automatically. 
++      In other word, it's no need to type "root" manually each time if you're using console.
++
++ 3.1.2 Set auto-IP on M3
++   1) First, we should write an script(named "ipsetting.sh" as follows) to set IP on M3.
++       root@m3ulcb:/# cat /bin/ipsetting.sh
++       #!/bin/sh
++
++       sleep 5
++       ifconfig eth0 192.168.10.6
++
++       # It's needed to check if the file "/bin/ipsetting.sh' has "-x" permission, 
++       # If not, just add this permisson.
++       root@m3ulcb:/# ls -l /bin/ipsetting.sh
++       -rwxrwxrwx. 1 root root 46 Jan 19 04:18 /bin/ipsetting.sh"
++
++       Note: For "ifconfig eth0 192.168.10.6" in this script, "eth0" and "192.168.10.6" 
++	     should be your own expected value here.
++	     In order to check if the script can works well, now, you can run 
++	     "ipsetting.sh" manually, then, check the IP of your target.
++
++   2) Then, write a service(named "ipsetting.service" as follows) which should be executed
++      automatically when the system started.
++       root@m3ulcb:/# cat /lib/systemd/system/ipsetting.service
++       [Unit]
++       Description=IP Setting
++       After=network.target
++
++       [Service]
++       ExecStart=/bin/ipsetting.sh
++
++       [Install]
++       WantedBy=multi-user.target
++
++       root@m3ulcb:/# systemctl enable /lib/systemd/system/ipsetting.service
++       Created symlink from /etc/systemd/system/multi-user.target.wants/ipsetting.service to 
++       /lib/systemd/system/ipsetting.service
++
++       # Have a check if symlink created under "/etc/systemd/system/multi-user.target.wants/"
++       root@m3ulcb:/# ls /etc/systemd/system/multi-user.target.wants/
++       afm-system-daemon.service  busybox-klogd.service  crond.service ipsetting.service
++       rc.pvr.service vsftpd.service audiomanger.service busybox-syslog.service cynara.service
++       ofono.service  remote-fs.service  weston.service avahi-daemon.service connman.service
++       dnsmaso.service  splash-quit.service  tcf-agent.service"
++
++   3) Now, you can restart your M3.
++      You'll find the M3 can set the IP automatically.
++      In other word, it's no need to set IP manually each time the M3 restarted.
++
++ 3.2 Hardware setup
++ This is about the hardware links and environment settings.
++
++ 3.2.1 Hardware Setting:
++ Some testcases require two machines. And each machine needs to have 2 or more
++ interfaces. These tests assume that they run on the following topology.
++
++                      Control Link
++            +--------------------------------------+
++            |                                      |
++    +-------+-------+                    +---------+-------+
++    |               +---- Test Link 0 ---+                 |
++    |  Local Host   +          :         +   Remote Host   |
++    |   (target)    +---- Test Link n ---+(LTP test server)|
++    +---------------+                    +-----------------+
++
++ For example, (Now, the number of test links only 1 which is enough for most network cases)
++ * Local host is M3 and remote host is Ubuntu16.04.
++ * Control Link: (the example of IF/IP/HWADDR as below)
++	Local Host:  eth0(192.168.10.6, 00:11:11:11:11:11) on M3,
++	Remote Host: enx004c00002787(192.168.10.50, 00:22:22:22:22:22) on Ubuntu16.04.
++ * Test Link 0: 
++	Local Host:  eth1(10.0.0.2, 00:33:33:33:33:33) on M3, 
++	Remote Host: enx004c00002788(10.0.0.1, 00:44:44:44:44:44) on Ubuntu16.04.
++
++ Note:
++   1) The above is just a example. So, the variable IP/IF/HWADDR should be
++      different from your own test environment.
++   2) To set enx004c00002787(control link) with a static IPv4 if possible.
++   3) Remote Host is also called "LTP test server".
++
++ 3.2.2 Environment Setting:
++ The following setting should be modified to adapt your test environment.
++ For example(same with the example in chapter2.5),
++ $ cat /userdata/conf/boards/renesas-m3.board
++   inherit "base-board"
++   include "base-params"
++   ... ...
++   RHOST="192.168.10.50"        # IP of the LTP test server(same with the value in 3.2.1)
++   RUSER="root"                 # USER of the LTP test server
++   PASSWD="root"                # PASSWD of the USER of the LTP test server
++   LHOST_HWADDRS="00:33:33:33:33:33" # HWADDR of the target(same with the value in 3.2.1)
++   RHOST_HWADDRS="00:44:44:44:44:44" # HWADDR of the LTP test server(same with the value in 3.2.1)
++   LHOST_IFACES="eth1"               # IF of the target(same with the value in 3.2.1)
++   RHOST_IFACES="enx004c00002788"    # IF of the LTP test server(same with the value in 3.2.1)
++   ... ...
++
++ 3.3 Software setup:
++ This is about the sofrware environment configuration on Remote Host.
++
++ 3.3.1 Remote Host Software Environment:
++ 1) First, there MUST be another test machine setup to act as the server
++    to these client side tests.  This machine MUST have the LTP installed
++    in the same exact location(default path: /opt/ltp).
++
++    Package(automake/autoconf/m4-1.4.7) should be installed first.
++    Commands:[On VM]
++    $ apt-get install automake
++    $ apt-get install autoconf
++
++    Make sure package(libtirpc) have installed before compile.(* Important)
++    $ apt-get install libtirpc-dev
++
++    Download and install the LTP:(if no git installed, do "apt-get install git" first)
++    $ mkdir /home/extend/
++    $ cd /home/extend/
++    $ git clone https://github.com/linux-test-project/ltp.git
++    $ cd ./ltp
++    $ make autotools
++    $ ./configure
++    $ make
++    $ make install
++
++    Next, some Packages should be installed first.
++    $ apt-get install nfs-kernel-server rsh-server
++    $ apt-get install telnetd fingerd rdist rsync
++    $ apt-get install udhcpd lightttpd xinetd rpcbind rstatd
++
++    # add rsh/rexec/rlogin to /etc/xinetd.d/
++    # the content of file "rsh" is as follows,
++    root@ubuntu-fuego:~# cat /etc/xinetd.d/rsh
++    # default: on
++    # descrīption: The rshd server is the server for the rcmd(3) routine and, \
++    #       consequently, for the rsh(1) program.  The server provides \
++    #       remote execution facilities with authentication based on \
++    #       privileged port numbers from trusted hosts.
++    service shell
++    {
++            disable = no
++            socket_type             = stream
++            wait                    = no
++            user                    = root
++            log_on_success          += USERID
++            log_on_failure          += USERID
++            server                  = /usr/sbin/in.rshd
++    }
++
++    # the content of file "rexec" is as follows,
++    root@ubuntu-fuego:~# cat /etc/xinetd.d/rexec
++    # default: off
++    # descrīption: Rexecd is the server for the rexec(3) routine.  The server \
++    #       provides remote execution facilities with authentication based \
++    #       on user names and passwords.
++    service exec
++    {
++            disable = no
++            socket_type             = stream
++            wait                    = no
++            user                    = root
++            log_on_success          += USERID
++            log_on_failure          += USERID
++            server                  = /usr/sbin/in.rexecd
++    }
++
++    # the content of file "rlogin" is as follows,
++    root@ubuntu-fuego:~# cat /etc/xinetd.d/rlogin
++    # default: on
++    # descrīption: rlogind is the server for the rlogin(1) program.  The server \
++    #       provides a remote login facility with authentication based on \
++    #       privileged port numbers from trusted hosts.
++    service login
++    {
++            disable = no
++            socket_type             = stream
++            wait                    = no
++            user                    = root
++            log_on_success          += USERID
++            log_on_failure          += USERID
++            server                  = /usr/sbin/in.rlogind
++    }
++
++    # restart xinetd service
++    $ systemctl restart xinetd
++
++ 2) Second, the LTP test server must be setup to allow the target(also called "Local Host" or "M3")
++    to connect using the "r" commands, such as rsh/ssh without password.
++
++    commands: [executed on Local Host(M3)]
++    $ ssh-keygen -t rsa
++    $ scp ~/.ssh/id_rsa.pub root@192.168.10.50:/root/.ssh/authorized_keys
++    # "root@192.168.10.50" should be the real IP of your own Remote Host.
++    $ ssh 192.168.10.50 ls
++    # The filename on your Remote Host(path:/home/root) will be listed on console and no password needed.
++
++    $ echo "192.168.10.50 $HOSTNAME-SERVER" >> /etc/hosts
++    # $HOSTNAME is the hostname of Remote Host
++
++    Add /home/extend/target_bin/testcase/bin to $PATH:
++    commands: [Execute on Ubuntu16.04]
++    $ echo "export PATH=\$PATH:/opt/ltp/testcases/bin/" >> /etc/profile
++    $ source /etc/profile
++
++    $ echo "192.168.10.6 $HOSTNAME-SERVER" >> /etc/hosts
++    # $HOSTNAME is the hostname of Local Host(here should be "m3ulcb" in this example)
++    $ echo "m3ulcb root" >> /root/.rhosts
++
++    $ sudo vi /etc/ssh/sshd_config
++    # change "PermitRootLogin prohibit-password" to "PermitRootLogin yes",
++    # which will allow remote terminal login via ssh with user "root".
++    $ sudo systemctl restart sshd
++
++    # check if the "r" commands can used without password.
++    $ rsh 192.168.10.50 pwd
++
++ 3.3.2 Target Software Environment:
++  The necessary packages were installed on your rootfs automatically if you are using "agl-demo-platform-qa".
++  So, just skip this chapter.
++
++  Note:
++   Some packages like,
++     xfsprogs,
++     netkit-rpc
++     netkit-telnet,
++     rdist/finger,
++     keyutils.
++   which cannot built successfully should be compiled/installed manually if you really want to test 
++   those cases which depend on the packages above.
++   
++ 3.4 Test Sample to check if LTP installed successful on the LTP test server: [executed on Remote Host]
++ $ cd /opt/ltp/
++ $ ./runltp -f math 
++
++Now, you can run the test you want.
++
++
++[1] http://docs.automotivelinux.org/docs/getting_started/en/dev/reference/source-code.html
++[2] http://docs.automotivelinux.org/docs/getting_started/en/dev/reference/machines/R-Car-Starter-Kit-gen3.html#setting-up-the-build-environment
++[3] http://docs.automotivelinux.org/docs/getting_started/en/dev/reference/machines/R-Car-Starter-Kit-gen3.html#booting-agl-image-on-r-car-starter-kit-gen3-boards-using-a-microsd-card
++[4] https://github.com/96boards/documentation/wiki/Dragonboard-Boot-Image 
+-- 
+2.7.4
+

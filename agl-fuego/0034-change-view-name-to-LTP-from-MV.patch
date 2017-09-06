@@ -1,0 +1,55 @@
+From 3bae0e5e07220009005fa2a16348fb84a607e251 Mon Sep 17 00:00:00 2001
+From: Liu Wenlong <liuwl.fnst@cn.fujitsu.com>
+Date: Wed, 6 Sep 2017 02:17:15 -0400
+Subject: [PATCH 1/3] change view name to "LTP" from "MV"
+
+What have changed,
+1. Name of any jobs start with "Functional.LTP" will not listed in view "Functional".
+2. Name of any jobs start with "Functional.LTP" will all listed in view "LTP".
+
+Signed-off-by: Liu Wenlong <liuwl.fnst@cn.fujitsu.com>
+---
+ userdata/conf/config_template.xml | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/userdata/conf/config_template.xml b/userdata/conf/config_template.xml
+index 70a9f9c..0538221 100644
+--- a/userdata/conf/config_template.xml
++++ b/userdata/conf/config_template.xml
+@@ -126,7 +126,7 @@
+         <hudson.views.LastDurationColumn/>
+         <com.robestone.hudson.compactcolumns.DeviceColumn plugin="compact-columns@1.6-SNAPSHOT"/>
+       </columns>
+-      <includeRegex>Functional\.[^M].*</includeRegex>
++      <includeRegex>Functional\.\w*$</includeRegex>
+       <recurse>false</recurse>
+       <useCssStyle>false</useCssStyle>
+       <includeStdJobList>false</includeStdJobList>
+@@ -274,7 +274,7 @@
+     </hudson.plugins.view.dashboard.Dashboard>
+     <hudson.plugins.view.dashboard.Dashboard plugin="dashboard-view@2.9.7">
+       <owner class="hudson" reference="../../.."/>
+-      <name>MW</name>
++      <name>LTP</name>
+       <filterExecutors>false</filterExecutors>
+       <filterQueue>false</filterQueue>
+       <properties class="hudson.model.View$PropertyList"/>
+@@ -292,7 +292,7 @@
+         <hudson.views.BuildButtonColumn/>
+         <hudson.queueSorter.PrioritySorterJobColumn plugin="PrioritySorter@1.2"/>
+       </columns>
+-      <includeRegex>MW\.[^M].*</includeRegex>
++      <includeRegex>^Functional.LTP.*</includeRegex>
+       <recurse>false</recurse>
+       <useCssStyle>false</useCssStyle>
+       <includeStdJobList>false</includeStdJobList>
+@@ -335,4 +335,4 @@
+       </envVars>
+     </hudson.slaves.EnvironmentVariablesNodeProperty>
+   </globalNodeProperties>
+-</hudson>
+\ No newline at end of file
++</hudson>
+-- 
+2.7.4
+
